@@ -1,0 +1,17 @@
+﻿.env
+.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+.pytest_cache/
+.pytest_tmp/
+pytest-cache-files-*/
+data/uploads/*
+data/transformed/*
+data/exports/*
+data/archives/*
+logs/*.log
+.vscode/
+.idea/
+.streamlit/secrets.toml

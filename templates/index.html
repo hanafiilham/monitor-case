@@ -1,0 +1,135 @@
+﻿<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PT WKS Industrial Relations</title>
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#061B16', sidebar: '#071F19', panel: '#123229', panel2: '#17352D', line: '#2D4B43', muted: '#91AAA1', mint: '#00B85A', mint2: '#00D26A'
+          },
+          fontFamily: { sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Arial'] }
+        }
+      }
+    }
+  </script>
+  <script src="/static/vendor/tailwindcss.js"></script>
+  <link rel="stylesheet" href="/static/vendor/poppins.css" />
+  <script src="/static/vendor/chart.umd.min.js"></script>
+
+  <!-- JS Spreadsheet -->
+  <link rel="stylesheet" href="/static/vendor/jsuites.css" />
+  <link rel="stylesheet" href="/static/vendor/jspreadsheet.css" />
+
+  <script src="/static/vendor/jsuites.js"></script>
+  <script src="/static/vendor/jspreadsheet.js"></script>
+
+  <link rel="stylesheet" href="/static/style.css?v=20260903-01" />
+</head>
+<body class="bg-ink text-slate-100 font-sans overflow-x-hidden">
+  <section id="auth-view" class="auth-view hidden"></section>
+  <header class="mobile-shellbar hidden" id="mobile-shellbar">
+    <button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="app-sidebar">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="mobile-shellbar-brand">
+      <img src="/assets/app.png" alt="APP" />
+      <b>APP</b>
+    </div>
+  </header>
+  <button id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" type="button" aria-label="Tutup menu"></button>
+  <div id="app-shell" class="min-h-screen flex hidden">
+    <aside id="app-sidebar" class="w-[255px] shrink-0 border-r border-line bg-sidebar fixed inset-y-0 left-0 z-20">
+      <div class="h-full flex flex-col p-4">
+        <div class="sidebar-brand flex items-center gap-3 h-16 border-b border-line">
+          <img class="sidebar-brand-logo" src="/assets/app.png" alt="APP" />
+          <div class="sidebar-brand-text">APP</div>
+        </div>
+        <nav class="mt-7 space-y-2">
+          <button data-nav="dashboard" class="nav active"><span class="nav-svg"><img src="/assets/sidebar/Icon1.png" alt=""></span>Dashboard</button>
+          <button data-nav="transform" class="nav"><span class="nav-svg"><img src="/assets/sidebar/Icon2.png" alt=""></span>Transform</button>
+          <button data-nav="reports" class="nav"><span class="nav-svg"><img src="/assets/sidebar/Icon3.png" alt=""></span>Progres Laporan</button>
+          <button data-nav="archive" class="nav"><span class="nav-svg"><img src="/assets/sidebar/Icon4.png" alt=""></span>Arsip</button>
+        </nav>
+        <div class="sidebar-auth-actions">
+          <button id="change-password-button" class="change-password-button" type="button">Ubah Password</button>
+          <button id="logout-button" class="logout-button" type="button">Logout</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="ml-[255px] min-h-screen w-[calc(100%-255px)] p-4">
+      <header class="app-page-navbar">
+        <h1>IR Monitoring Case (IMC)</h1>
+        <p>IR-ER Region</p>
+      </header>
+      <section id="view-dashboard" class="view"></section>
+      <section id="view-transform" class="view hidden"></section>
+      <section id="view-reports" class="view hidden"></section>
+      <section id="view-archive" class="view hidden"></section>
+    </main>
+  </div>
+
+  <div id="modal-root" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm p-6"></div>
+  <div id="loading-root" class="hidden app-loading-root" aria-live="polite" aria-busy="true"></div>
+  <script src="/static/app.js?v=20260903-01"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1373 @@
+﻿:root {
+    --bg: #061B16;
+    --sidebar: #071F19;
+    --panel: #17352D;
+    --panel-dark: #0B2A22;
+    --border: #2D4B43;
+    --green: #00B85A;
+    --green-light: #00D26A;
+    --text: #E8F3EF;
+    --muted: #91AAA1;
+    --grid: rgba(145, 170, 161, 0.12);
+}
+
+html, body, [class*="css"] {
+    font-family: Inter, Arial, sans-serif;
+}
+
+.stApp {
+    background: var(--bg);
+    color: var(--text);
+}
+
+[data-testid="stHeader"] {
+    display: none;
+}
+
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+[data-testid="stSidebar"] {
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    width: 202px !important;
+    min-width: 202px !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding: 0;
+}
+
+.block-container {
+    max-width: 100%;
+    padding: 10px 10px 8px 10px;
+}
+
+.sidebar-shell {
+    min-height: 100vh;
+    position: relative;
+    background: var(--sidebar);
+}
+
+.brand {
+    height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand-badge {
+    width: 31px;
+    height: 31px;
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    background: var(--green);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.brand-name {
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.nav-list {
+    padding: 18px 12px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    height: 45px;
+    gap: 12px;
+    padding: 0 13px;
+    margin-bottom: 9px;
+    color: #b7c8c2 !important;
+    text-decoration: none !important;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+.nav-item.active {
+    background: #073929;
+    color: var(--green-light) !important;
+}
+
+.nav-grid {
+    width: 17px;
+    height: 17px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+}
+
+.nav-grid i {
+    background: currentColor;
+    border-radius: 1px;
+}
+
+.nav-doc {
+    width: 16px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+}
+
+.nav-doc::after {
+    content: "";
+    position: absolute;
+    right: -5px;
+    bottom: -3px;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    transform: rotate(35deg);
+}
+
+.profile-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 202px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 18px;
+    background: var(--sidebar);
+    border-top: 1px solid var(--border);
+    z-index: 10;
+}
+
+.avatar-ring {
+    width: 29px;
+    height: 29px;
+    border-radius: 50%;
+    border: 1px solid #44665D;
+    background: #102C25;
+    display: grid;
+    place-items: center;
+    color: #F5C6B4;
+    font-size: 9px;
+    font-weight: 800;
+    box-shadow: 0 0 0 3px #0A281F;
+}
+
+.profile-box strong {
+    display: block;
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.1;
+}
+
+.profile-box small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.topbar-row {
+    min-height: 42px;
+    margin: -2px 0 9px 0;
+}
+
+.filter-label {
+    position: absolute;
+    z-index: 2;
+    margin: 10px 0 0 14px;
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+[data-testid="stSelectbox"] {
+    margin-top: 0;
+}
+
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background: #0D2F26;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    min-height: 32px;
+    color: var(--text);
+    box-shadow: none;
+}
+
+[data-testid="stSelectbox"] div[data-baseweb="select"] span {
+    color: var(--text);
+    font-size: 11px;
+}
+
+.stButton > button,
+.stDownloadButton > button {
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: #0D2F26;
+    color: var(--text);
+    min-height: 34px;
+    font-weight: 700;
+}
+
+.stButton > button[kind="primary"],
+.stDownloadButton > button[kind="primary"] {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+}
+
+div[data-testid="stPlotlyChart"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 20px 8px 4px 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+}
+
+.chart-title {
+    position: relative;
+    z-index: 5;
+    margin: 10px 0 -36px 12px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+[data-testid="stHorizontalBlock"] {
+    gap: 10px;
+}
+
+.empty-state,
+.section-card,
+.transform-header {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 16px;
+    margin-bottom: 10px;
+}
+
+.empty-state h3,
+.transform-header h2 {
+    color: var(--text);
+    margin: 0 0 6px;
+}
+
+.empty-state p,
+.transform-header p {
+    color: var(--muted);
+    margin: 0;
+}
+
+.section-card h3,
+.section-card h2,
+.stSubheader {
+    color: var(--text);
+}
+
+[data-testid="stDataFrame"],
+[data-testid="stMetric"] {
+    background: var(--panel);
+    border-radius: 7px;
+}
+
+.stAlert {
+    background: #0D2F26;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+    [data-testid="stSidebar"] {
+        width: auto !important;
+        min-width: auto !important;
+    }
+
+    .profile-box {
+        position: static;
+        width: auto;
+        margin-top: 24px;
+    }
+
+    .chart-title {
+        margin-top: 8px;
+    }
+}
+
+/* Production dashboard refinements */
+#MainMenu,
+footer,
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
+section.main > div {
+    padding-top: 0 !important;
+}
+
+[data-testid="stAppViewContainer"] {
+    background: var(--bg);
+}
+
+[data-testid="stSidebar"] {
+    width: 226px !important;
+    min-width: 226px !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    gap: 0;
+}
+
+.profile-box {
+    width: 226px;
+}
+
+.block-container {
+    padding: 10px 12px 10px 12px !important;
+}
+
+.filter-shell {
+    position: absolute;
+    height: 30px;
+    min-width: 106px;
+    margin: 1px 0 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.filter-icon {
+    width: 13px;
+    height: 13px;
+    display: inline-block;
+    background: var(--green-light);
+    clip-path: polygon(12% 15%, 88% 15%, 58% 50%, 58% 78%, 42% 86%, 42% 50%);
+    opacity: 0.85;
+}
+
+.filter-title {
+    text-transform: uppercase;
+}
+
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    min-height: 31px !important;
+    height: 31px;
+    padding-left: 70px;
+    background: #0B2D24 !important;
+    border-color: var(--border) !important;
+}
+
+[data-testid="stSelectbox"]:nth-of-type(1) div[data-baseweb="select"] > div::before {
+    content: "Tahun:";
+}
+
+.stButton > button[kind="primary"] {
+    background: var(--green) !important;
+    border-color: var(--green) !important;
+    color: #fff !important;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset;
+}
+
+.stButton > button[kind="primary"] p,
+.stButton > button[kind="primary"] span {
+    color: #fff !important;
+}
+
+div[data-testid="stPlotlyChart"] {
+    min-height: 310px;
+    height: 310px;
+    padding: 20px 8px 2px 8px !important;
+    overflow: hidden;
+}
+
+div[data-testid="stPlotlyChart"] > div,
+div[data-testid="stPlotlyChart"] .js-plotly-plot,
+div[data-testid="stPlotlyChart"] .plot-container {
+    height: 100% !important;
+}
+
+.chart-title {
+    margin: 8px 0 -34px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600;
+}
+
+[data-testid="stHorizontalBlock"] {
+    gap: 8px !important;
+}
+
+[data-testid="stVerticalBlock"] {
+    gap: 7px !important;
+}
+
+div[data-testid="stDialog"] > div,
+div[role="dialog"] {
+    background: #102D26 !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 9px !important;
+}
+
+.dialog-copy,
+.dialog-meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+[data-testid="stFileUploader"] {
+    background: #0B2A22;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+[data-testid="stFileUploader"] section {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+[data-testid="stFileUploader"] small,
+[data-testid="stFileUploader"] label,
+[data-testid="stFileUploader"] p {
+    color: var(--muted) !important;
+}
+
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border);
+    background: #0B2A22 !important;
+}
+
+.empty-state.compact {
+    margin-top: 8px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (min-width: 1200px) {
+    .block-container {
+        height: 100vh;
+        overflow: hidden;
+    }
+}
+
+/* FINAL REFERENCE MATCH OVERRIDES */
+:root {
+    --bg: #061B16;
+    --sidebar: #071F19;
+    --panel: #17352D;
+    --border: #2D4B43;
+    --green: #00B85A;
+    --green-light: #00D26A;
+    --text: #E8F3EF;
+    --muted: #91AAA1;
+}
+
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: Inter, Arial, sans-serif !important;
+}
+
+#MainMenu,
+header,
+footer,
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarNav"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+}
+
+[data-testid="stSidebar"] {
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: 255px !important;
+    background: var(--sidebar) !important;
+    border-right: 1px solid var(--border) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding: 0 !important;
+    width: 255px !important;
+}
+
+.sidebar-shell {
+    width: 255px !important;
+    min-height: 100vh !important;
+    background: var(--sidebar) !important;
+}
+
+.brand {
+    height: 67px !important;
+    padding: 0 16px !important;
+    gap: 12px !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.brand-badge {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 5px !important;
+    background: var(--green) !important;
+    color: #fff !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+}
+
+.brand-name {
+    color: var(--green-light) !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+
+.nav-list {
+    padding: 14px 16px !important;
+}
+
+.nav-item {
+    height: 48px !important;
+    border-radius: 7px !important;
+    padding: 0 16px !important;
+    margin-bottom: 10px !important;
+    gap: 13px !important;
+    color: #C9D8D2 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+}
+
+.nav-item.active {
+    background: #073927 !important;
+    color: var(--green-light) !important;
+}
+
+.profile-box {
+    width: 255px !important;
+    height: 70px !important;
+    padding: 0 22px !important;
+    background: var(--sidebar) !important;
+    border-top: 1px solid var(--border) !important;
+}
+
+.profile-box strong {
+    font-size: 11px !important;
+    color: var(--text) !important;
+}
+
+.profile-box small {
+    font-size: 10px !important;
+    color: var(--muted) !important;
+}
+
+.block-container {
+    padding: 8px 13px 8px 13px !important;
+    max-width: none !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child {
+    min-height: 59px !important;
+    padding: 10px 0 9px 8px !important;
+    border-bottom: 1px solid var(--border) !important;
+    margin: -8px -13px 8px -13px !important;
+    background: var(--bg) !important;
+}
+
+.filter-shell {
+    height: 34px !important;
+    margin: 3px 0 0 22px !important;
+    color: var(--muted) !important;
+    font-size: 11px !important;
+}
+
+.filter-icon {
+    background: var(--green-light) !important;
+}
+
+.filter-spacer {
+    display: block;
+    height: 34px;
+}
+
+[data-testid="stSelectbox"] {
+    margin: 0 !important;
+}
+
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    height: 34px !important;
+    min-height: 34px !important;
+    background: #0D2D24 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 17px !important;
+    padding-left: 10px !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stSelectbox"] span,
+[data-testid="stSelectbox"] svg {
+    color: var(--text) !important;
+    fill: var(--muted) !important;
+    font-size: 12px !important;
+}
+
+.stButton > button {
+    height: 40px !important;
+    min-height: 40px !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+.stButton > button[kind="primary"] {
+    background: var(--green) !important;
+    border-color: var(--green) !important;
+    color: #fff !important;
+}
+
+.stButton > button[kind="primary"] * {
+    color: #fff !important;
+    fill: #fff !important;
+}
+
+.chart-title {
+    margin: 12px 0 -39px 14px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--text) !important;
+}
+
+div[data-testid="stPlotlyChart"] {
+    height: 346px !important;
+    min-height: 346px !important;
+    max-height: 346px !important;
+    background: var(--panel) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 7px !important;
+    padding: 24px 10px 5px 10px !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stPlotlyChart"] > div,
+div[data-testid="stPlotlyChart"] .js-plotly-plot,
+div[data-testid="stPlotlyChart"] .plot-container,
+div[data-testid="stPlotlyChart"] .svg-container {
+    height: 100% !important;
+}
+
+[data-testid="stHorizontalBlock"] {
+    gap: 8px !important;
+}
+
+[data-testid="stVerticalBlock"] {
+    gap: 8px !important;
+}
+
+.empty-state,
+.section-card,
+.transform-header {
+    background: var(--panel) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 7px !important;
+    color: var(--text) !important;
+}
+
+@media (min-width: 1200px) {
+    .block-container {
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+}
+
+/* STRICT CLEANUP: one navbar upload button, tighter dashboard */
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child .stButton > button[kind="primary"] {
+    width: 118px !important;
+    height: 40px !important;
+    margin-left: auto !important;
+    border-radius: 4px !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child .stButton {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+/* Keep filter controls visually inside one capsule. */
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child {
+    position: relative !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 12px;
+    width: 466px;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: #0D2D24;
+    z-index: 0;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stHorizontalBlock"] {
+    position: relative !important;
+    z-index: 2 !important;
+    gap: 0 !important;
+    max-width: 466px !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background: transparent !important;
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    padding-left: 0 !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stSelectbox"] div[data-baseweb="select"] > div:hover,
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stSelectbox"] div[data-baseweb="select"] > div:focus-within {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.filter-shell {
+    margin-left: 22px !important;
+    z-index: 3 !important;
+}
+
+.filter-spacer {
+    width: 96px !important;
+}
+
+/* Dashboard card grid: consistent with reference and no white gaps. */
+div[data-testid="stPlotlyChart"] {
+    height: calc((100vh - 86px) / 2) !important;
+    min-height: 300px !important;
+    max-height: 348px !important;
+}
+
+@media (max-height: 760px) and (min-width: 1200px) {
+    div[data-testid="stPlotlyChart"] {
+        height: 333px !important;
+        min-height: 333px !important;
+        max-height: 333px !important;
+    }
+
+    .chart-title {
+        margin-top: 10px !important;
+    }
+}
+
+.dialog-warning {
+    margin: 8px 0 10px;
+    padding: 9px 10px;
+    border: 1px solid #6b5144;
+    border-radius: 6px;
+    background: #2b241d;
+    color: #f2c7b3;
+    font-size: 12px;
+}
+
+/* Dynamic filter and KPI strip */
+.kpi-strip {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-right: 6px;
+}
+
+.kpi-strip span {
+    min-width: 68px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(45, 75, 67, 0.9);
+    border-radius: 16px;
+    background: #0D2D24;
+    color: var(--text);
+}
+
+.kpi-strip b {
+    color: var(--green-light);
+    font-size: 14px;
+    line-height: 1;
+}
+
+.kpi-strip small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child::before {
+    width: 560px !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stHorizontalBlock"] {
+    max-width: 560px !important;
+}
+
+.filter-spacer {
+    width: 86px !important;
+}
+
+/* FINAL CHART VISIBILITY FIX: do not crop axes, legends, or labels */
+div[data-testid="stPlotlyChart"] {
+    height: 374px !important;
+    min-height: 374px !important;
+    max-height: none !important;
+    padding: 8px 10px 8px 10px !important;
+    overflow: visible !important;
+}
+
+div[data-testid="stPlotlyChart"] > div,
+div[data-testid="stPlotlyChart"] .js-plotly-plot,
+div[data-testid="stPlotlyChart"] .plot-container,
+div[data-testid="stPlotlyChart"] .svg-container {
+    height: 360px !important;
+    overflow: visible !important;
+}
+
+.chart-title {
+    margin: 12px 0 -43px 14px !important;
+}
+
+@media (max-height: 760px) and (min-width: 1200px) {
+    div[data-testid="stPlotlyChart"] {
+        height: 350px !important;
+        min-height: 350px !important;
+    }
+
+    div[data-testid="stPlotlyChart"] > div,
+    div[data-testid="stPlotlyChart"] .js-plotly-plot,
+    div[data-testid="stPlotlyChart"] .plot-container,
+    div[data-testid="stPlotlyChart"] .svg-container {
+        height: 336px !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .block-container {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* KPI cards and analysis tabs */
+.kpi-card-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin: 8px 0 8px 0;
+}
+
+.kpi-card {
+    min-height: 68px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #12352C;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.kpi-card small {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.kpi-card b {
+    margin-top: 5px;
+    color: var(--green-light);
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 750;
+}
+
+.kpi-card em {
+    margin-left: 4px;
+    color: var(--muted);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+[data-testid="stTabs"] [role="tablist"] {
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+}
+
+[data-testid="stTabs"] [role="tab"] {
+    color: var(--muted);
+    background: #0D2D24;
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+    height: 34px;
+    padding: 0 14px;
+}
+
+[data-testid="stTabs"] [aria-selected="true"] {
+    color: var(--green-light) !important;
+    background: #12352C !important;
+}
+
+.analysis-note {
+    min-height: 360px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--panel);
+    color: var(--text);
+}
+
+.analysis-note h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.analysis-note p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* Wider dynamic filter rail for year/month/department/type/position/status */
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child::before {
+    width: min(820px, calc(100vw - 430px)) !important;
+}
+
+.block-container > div:first-child > [data-testid="stHorizontalBlock"]:first-child > div:first-child [data-testid="stHorizontalBlock"] {
+    max-width: min(820px, calc(100vw - 430px)) !important;
+}
+
+[data-testid="stSelectbox"] span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+@media (max-width: 1300px) {
+    .kpi-card-row {
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+}
+
+/* Unified dashboard layout, no analysis tabs */
+[data-testid="stTabs"] {
+    display: none !important;
+}
+
+.kpi-card-row {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+/* keep unified page readable; scroll is allowed when data labels need room */
+div[data-testid="stPlotlyChart"] {
+    height: 350px !important;
+    min-height: 350px !important;
+}
+
+div[data-testid="stPlotlyChart"] > div,
+div[data-testid="stPlotlyChart"] .js-plotly-plot,
+div[data-testid="stPlotlyChart"] .plot-container,
+div[data-testid="stPlotlyChart"] .svg-container {
+    height: 338px !important;
+}
+
+/* FINAL FIXED LAYOUT: prevent chart jitter/resizing */
+.block-container {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.kpi-card-row {
+    height: 76px !important;
+    min-height: 76px !important;
+    max-height: 76px !important;
+    overflow: hidden !important;
+}
+
+.kpi-card {
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+}
+
+.chart-title {
+    height: 18px !important;
+    line-height: 18px !important;
+    margin: 10px 0 -35px 14px !important;
+}
+
+div[data-testid="stPlotlyChart"] {
+    height: 356px !important;
+    min-height: 356px !important;
+    max-height: 356px !important;
+    padding: 10px 10px 8px 10px !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stPlotlyChart"] > div,
+div[data-testid="stPlotlyChart"] .js-plotly-plot,
+div[data-testid="stPlotlyChart"] .plot-container,
+div[data-testid="stPlotlyChart"] .svg-container {
+    height: 338px !important;
+    min-height: 338px !important;
+    max-height: 338px !important;
+    overflow: hidden !important;
+}
+
+[data-testid="stVerticalBlock"],
+[data-testid="stHorizontalBlock"] {
+    transition: none !important;
+}
+
+/* Transform active data state */
+.active-data-card {
+    margin-bottom: 10px !important;
+}
+
+.active-data-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 6px 10px;
+    margin: 4px 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: #0D2D24;
+    color: var(--green-light);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+[data-testid="stExpander"] {
+    border: 1px solid var(--border) !important;
+    border-radius: 7px !important;
+    background: #0D2D24 !important;
+}
+
+
+
+/* Archive page */
+.nav-archive {
+    width: 17px;
+    height: 17px;
+    display: inline-block;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    position: relative;
+}
+
+.nav-archive::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 4px;
+    height: 2px;
+    background: currentColor;
+    box-shadow: 0 4px 0 currentColor;
+}
+
+.archive-header {
+    margin-bottom: 10px !important;
+}
+
+.archive-filter-card,
+.archive-upload-card {
+    min-height: 176px !important;
+    margin-bottom: 10px !important;
+}
+
+.archive-filter-card .stSelectbox label,
+.archive-upload-card .stTextInput label,
+.archive-upload-card [data-testid="stFileUploader"] label {
+    color: var(--muted) !important;
+    font-size: 12px !important;
+}
+
+.archive-list-title {
+    margin: 10px 0 8px;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.archive-card {
+    margin-top: 8px;
+    padding: 14px 16px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: linear-gradient(180deg, rgba(23, 53, 45, 0.98), rgba(13, 47, 38, 0.98));
+}
+
+.archive-card-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.archive-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 184, 90, 0.35);
+    border-radius: 6px;
+    background: rgba(0, 184, 90, 0.11);
+    color: var(--green-light);
+    font-size: 20px;
+}
+
+.archive-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.archive-info h3 {
+    margin: 0 0 4px;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.archive-info p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.archive-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.archive-meta span {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border: 1px solid rgba(45, 75, 67, 0.9);
+    border-radius: 4px;
+    background: rgba(6, 27, 22, 0.55);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.archive-card + div[data-testid="stHorizontalBlock"] {
+    margin-top: -2px !important;
+    margin-bottom: 10px !important;
+    padding: 0 16px 12px !important;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    border-radius: 0 0 7px 7px;
+    background: rgba(13, 47, 38, 0.98);
+}
+
+.archive-pdf-preview {
+    width: 100%;
+    height: 68vh;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+}
+
+@media (max-width: 900px) {
+    .archive-meta {
+        gap: 5px;
+    }
+
+    .archive-card-main {
+        gap: 10px;
+    }
+}
+
+/* Archive minimal refinement */
+.archive-topbar {
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--panel);
+}
+
+.archive-topbar h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.archive-topbar p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.archive-form-title {
+    margin: 2px 0 6px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.archive-filter-spacer {
+    height: 40px;
+}
+
+.archive-list-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 8px 0 6px !important;
+    font-size: 16px !important;
+}
+
+.archive-list-title span {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.archive-row-anchor + div[data-testid="stHorizontalBlock"] {
+    min-height: 92px !important;
+    margin: 0 0 8px !important;
+    padding: 12px 14px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 7px !important;
+    background: #123229 !important;
+    align-items: center !important;
+}
+
+.archive-row-anchor + div[data-testid="stHorizontalBlock"] > div {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.archive-row-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.archive-row-info .archive-icon {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+}
+
+.archive-row-info .archive-info h3 {
+    margin: 0 0 3px !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.archive-row-info .archive-info p {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px !important;
+}
+
+.archive-row-info .archive-meta {
+    margin-top: 7px !important;
+    gap: 5px !important;
+}
+
+.archive-row-info .archive-meta span {
+    min-height: 21px !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+}
+
+.archive-row-anchor + div[data-testid="stHorizontalBlock"] .stButton > button,
+.archive-row-anchor + div[data-testid="stHorizontalBlock"] .stDownloadButton > button {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+}
+
+.archive-card,
+.archive-card + div[data-testid="stHorizontalBlock"] {
+    display: none !important;
+}
+
+@media (max-width: 900px) {
+    .archive-topbar {
+        height: auto;
+        min-height: 72px;
+    }
+
+    .archive-row-anchor + div[data-testid="stHorizontalBlock"] {
+        padding: 10px !important;
+    }
+
+    .archive-row-info .archive-info h3,
+    .archive-row-info .archive-info p {
+        white-space: normal;
+    }
+}
