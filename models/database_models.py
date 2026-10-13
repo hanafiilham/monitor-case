@@ -69,16 +69,6 @@ class AuditLog(Base):
     created_at: Mapped[object] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
 
-class AppUser(Base):
-    __tablename__ = "app_users"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    perner: Mapped[str] = mapped_column(String(80), nullable=False, unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    created_at: Mapped[object] = mapped_column(DateTime, server_default=func.now(), nullable=False)
-    updated_at: Mapped[object] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
-
 class ArchiveDocument(Base):
     __tablename__ = "archive_documents"
 

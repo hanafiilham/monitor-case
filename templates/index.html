@@ -28,11 +28,10 @@
   <script src="/static/vendor/jsuites.js"></script>
   <script src="/static/vendor/jspreadsheet.js"></script>
 
-  <link rel="stylesheet" href="/static/style.css?v=20260903-01" />
+  <link rel="stylesheet" href="/static/style.css?v=20260910-01" />
 </head>
 <body class="bg-ink text-slate-100 font-sans overflow-x-hidden">
-  <section id="auth-view" class="auth-view hidden"></section>
-  <header class="mobile-shellbar hidden" id="mobile-shellbar">
+  <header class="mobile-shellbar" id="mobile-shellbar">
     <button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="app-sidebar">
       <span></span>
       <span></span>
@@ -44,7 +43,7 @@
     </div>
   </header>
   <button id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" type="button" aria-label="Tutup menu"></button>
-  <div id="app-shell" class="min-h-screen flex hidden">
+  <div id="app-shell" class="min-h-screen flex">
     <aside id="app-sidebar" class="w-[255px] shrink-0 border-r border-line bg-sidebar fixed inset-y-0 left-0 z-20">
       <div class="h-full flex flex-col p-4">
         <div class="sidebar-brand flex items-center gap-3 h-16 border-b border-line">
@@ -57,10 +56,6 @@
           <button data-nav="reports" class="nav"><span class="nav-svg"><img src="/assets/sidebar/Icon3.png" alt=""></span>Progres Laporan</button>
           <button data-nav="archive" class="nav"><span class="nav-svg"><img src="/assets/sidebar/Icon4.png" alt=""></span>Arsip</button>
         </nav>
-        <div class="sidebar-auth-actions">
-          <button id="change-password-button" class="change-password-button" type="button">Ubah Password</button>
-          <button id="logout-button" class="logout-button" type="button">Logout</button>
-        </div>
       </div>
     </aside>
 
@@ -78,7 +73,7 @@
 
   <div id="modal-root" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm p-6"></div>
   <div id="loading-root" class="hidden app-loading-root" aria-live="polite" aria-busy="true"></div>
-  <script src="/static/app.js?v=20260903-01"></script>
+  <script src="/static/app.js?v=20260910-01"></script>
 </body>
 </html>
 

@@ -70,8 +70,6 @@ function icon(name, className = 'ui-icon') {
     edit: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>',
     trash: '<path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path>',
     save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path>',
-    login: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path>',
-    lock: '<rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path>',
     more: '<circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle>',
     file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path>',
     eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle>'
@@ -93,9 +91,6 @@ async function api(url, options = {}) {
   } catch (error) {
     data = { message: text ? text.slice(0, 500) : 'Response server tidak valid.' };
   }
-  if (response.status === 401 && data.code === 'UNAUTHENTICATED') {
-    renderLoginScreen(data.message);
-  }
   if (!response.ok || data.ok === false) {
     const error = new Error(data.message || 'Request gagal.');
     error.data = data;
@@ -105,144 +100,8 @@ async function api(url, options = {}) {
 }
 
 function showAppShell() {
-  $('#auth-view')?.classList.add('hidden');
   $('#app-shell')?.classList.remove('hidden');
   $('#mobile-shellbar')?.classList.remove('hidden');
-}
-
-function hideAppShell() {
-  $('#app-shell')?.classList.add('hidden');
-  $('#mobile-shellbar')?.classList.add('hidden');
-  closeMobileSidebar();
-}
-
-function renderLoginScreen(message = '') {
-  hideAppShell();
-  const root = $('#auth-view');
-  if (!root) return;
-  root.classList.remove('hidden');
-  root.innerHTML = `
-    <div class="login-card">
-      <div class="login-brand">
-        <img src="/assets/app.png" alt="APP">
-        <div>
-          <h1>APP</h1>
-          <p>Small Activity Group (SGA)</p>
-        </div>
-      </div>
-      <form id="login-form" class="login-form">
-        <label>PERNER
-          <input class="input" name="perner" inputmode="numeric" autocomplete="username" required autofocus>
-        </label>
-        <label>Password
-          <input class="input" name="password" type="password" autocomplete="current-password" minlength="1" maxlength="8" required>
-        </label>
-        ${message ? `<div class="login-error">${escapeHtml(message)}</div>` : ''}
-        <button id="login-submit" class="btn primary" type="submit">${icon('login')} Login</button>
-      </form>
-    </div>`;
-  $('#login-form')?.addEventListener('submit', handleLoginSubmit);
-}
-
-async function handleLoginSubmit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const button = $('#login-submit');
-  const formData = new FormData(form);
-  const payload = {
-    perner: String(formData.get('perner') || '').trim(),
-    password: String(formData.get('password') || ''),
-  };
-  setButtonLoading(button, true);
-  try {
-    await api('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    showAppShell();
-    setView(state.view || 'dashboard');
-  } catch (error) {
-    renderLoginScreen(error.message || 'Login gagal.');
-  } finally {
-    setButtonLoading(button, false);
-  }
-}
-
-function openChangePasswordModal() {
-  openModal(`<div class="sheet-dialog change-password-dialog">
-    <div class="sheet-dialog-head">
-      <h2>${icon('lock')} Ubah Password</h2>
-      <button id="close-modal" class="btn">Tutup</button>
-    </div>
-    <form id="change-password-form" class="change-password-form">
-      <label>Password Lama
-        <input class="input" name="old_password" type="password" autocomplete="current-password" minlength="1" maxlength="8" required autofocus>
-      </label>
-      <label>Password Baru
-        <input class="input" name="new_password" type="password" autocomplete="new-password" minlength="1" maxlength="8" required>
-      </label>
-      <label>Konfirmasi Password Baru
-        <input class="input" name="confirm_password" type="password" autocomplete="new-password" minlength="1" maxlength="8" required>
-      </label>
-      <small>Password maksimal 8 karakter.</small>
-      <div class="sheet-dialog-actions">
-        <button type="button" id="cancel-change-password" class="btn">Batal</button>
-        <button type="submit" id="save-change-password" class="btn primary">Simpan</button>
-      </div>
-    </form>
-  </div>`);
-  $('#close-modal').onclick = closeModal;
-  $('#cancel-change-password').onclick = closeModal;
-  $('#change-password-form')?.addEventListener('submit', handleChangePasswordSubmit);
-}
-
-async function handleChangePasswordSubmit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const button = $('#save-change-password');
-  const formData = new FormData(form);
-  const payload = {
-    old_password: String(formData.get('old_password') || ''),
-    new_password: String(formData.get('new_password') || ''),
-    confirm_password: String(formData.get('confirm_password') || ''),
-  };
-  setButtonLoading(button, true);
-  showScreenLoading('Menyimpan password...');
-  try {
-    await api('/api/auth/change-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    openModal(`<div class="sheet-dialog">
-      <div class="sheet-dialog-head"><h2>Password Berhasil Diubah</h2><button id="close-modal" class="btn">Tutup</button></div>
-      <p class="sheet-dialog-copy">Gunakan password baru saat login berikutnya.</p>
-    </div>`);
-    $('#close-modal').onclick = closeModal;
-  } catch (error) {
-    openModal(`<div class="sheet-dialog">
-      <div class="sheet-dialog-head"><h2>Ubah Password Gagal</h2><button id="close-modal" class="btn">Tutup</button></div>
-      <p class="sheet-dialog-copy">${escapeHtml(error.message || 'Password belum bisa diubah.')}</p>
-    </div>`);
-    $('#close-modal').onclick = closeModal;
-  } finally {
-    hideScreenLoading();
-    setButtonLoading(button, false);
-  }
-}
-
-async function logout() {
-  showScreenLoading('Logout...');
-  try {
-    await api('/api/auth/logout', { method: 'POST' });
-  } catch (error) {
-    console.warn('Logout gagal', error);
-  } finally {
-    hideScreenLoading();
-    destroyCharts();
-    renderLoginScreen();
-  }
 }
 
 function setView(view) {
@@ -5580,24 +5439,12 @@ async function saveEmployeeMaster() {
 async function bootApp() {
   bindMobileSidebar();
   $$('.nav').forEach(btn => btn.onclick = () => setView(btn.dataset.nav));
-  $('#change-password-button')?.addEventListener('click', openChangePasswordModal);
-  $('#logout-button')?.addEventListener('click', logout);
   document.addEventListener('click', event => {
     const nav = event.target.closest?.('.nav[data-nav]');
     if (!nav) return;
     event.preventDefault();
     setView(nav.dataset.nav);
   });
-  try {
-    const auth = await api('/api/auth/me');
-    if (!auth.authenticated) {
-      renderLoginScreen();
-      return;
-    }
-  } catch (error) {
-    renderLoginScreen(error.message || 'Silakan login terlebih dahulu.');
-    return;
-  }
   showAppShell();
   setView('dashboard');
 }
@@ -5607,8 +5454,6 @@ if (document.readyState === 'loading') {
 } else {
   bootApp();
 }
-
-
 
 
 

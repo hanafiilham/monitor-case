@@ -1,0 +1,18 @@
+[Unit]
+Description=IR Monitoring Case Flask Application
+After=network.target mariadb.service
+Wants=mariadb.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=www-data
+WorkingDirectory=/opt/sga-dashboard
+EnvironmentFile=/opt/sga-dashboard/.env
+ExecStart=/opt/sga-dashboard/.venv/bin/gunicorn --workers 1 --threads 4 --timeout 300 --bind 127.0.0.1:8501 --access-logfile - --error-logfile - app:app
+Restart=always
+RestartSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

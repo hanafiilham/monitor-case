@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: imc-sga
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: python scripts/init_database.py && gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 300
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: APP_DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: STORAGE_BACKEND
+        value: supabase
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: imc-archives
+      - key: HOSTING_USERNAME
+        sync: false
+      - key: HOSTING_PASSWORD
+        sync: false

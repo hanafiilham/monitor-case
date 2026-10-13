@@ -4,7 +4,6 @@ Aplikasi internal untuk mengelola data sanksi karyawan, master data karyawan, ar
 
 ## Fitur Utama
 
-- Login/logout menggunakan PERNER dan password.
 - Upload data sanksi dari Excel/CSV.
 - Preview, load, transform, edit, dan simpan data sanksi ke MySQL.
 - Spreadsheet Transform berbasis Jspreadsheet.
@@ -66,9 +65,6 @@ Contoh isi `.env`:
 ```env
 APP_NAME=SGA Dashboard
 APP_ENV=development
-SECRET_KEY=ganti_dengan_secret_random_yang_panjang
-AUTH_DEFAULT_PERNER=29951
-AUTH_DEFAULT_PASSWORD=12345678
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=sga_dashboard
@@ -92,14 +88,17 @@ python app.py
 http://127.0.0.1:8501
 ```
 
-## Login Awal
+## Akses Aplikasi
 
-```text
-PERNER: 29951
-Password: 12345678
-```
+Aplikasi langsung membuka dashboard tanpa login.
 
-Password dapat diubah dari tombol **Ubah Password** di sidebar.
+Karena data aplikasi bersifat internal, gunakan pembatasan akses pada reverse proxy atau Cloudflare Access sebelum membuka aplikasi ke internet.
+
+## Deploy Oracle Cloud
+
+Panduan Render + Supabase tersedia di [`deploy/render/README.md`](deploy/render/README.md).
+
+Panduan deployment Ubuntu, MariaDB, Gunicorn, Nginx, migrasi data, dan backup tersedia di [`deploy/oracle/README.md`](deploy/oracle/README.md).
 
 ## Menjalankan Dengan Cloudflare Tunnel
 

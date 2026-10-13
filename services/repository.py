@@ -6,9 +6,8 @@ import re
 
 import pandas as pd
 from sqlalchemy import delete, extract, select, update
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from models.database_models import AppUser, ArchiveDocument, AuditLog, EmployeeMaster, EmployeeMasterBatch, ReportProgress, Sanction, SanctionDurationMaster, UploadBatch, ValidationError
+from models.database_models import ArchiveDocument, AuditLog, EmployeeMaster, EmployeeMasterBatch, ReportProgress, Sanction, SanctionDurationMaster, UploadBatch, ValidationError
 from services.database import create_tables, session_scope
 from services.transformer import standardize_department
 
@@ -36,49 +35,6 @@ EMPLOYEE_MASTER_COLUMNS = [
     "jabatan_karyawan",
     "departemen_seksi",
 ]
-
-
-def normalize_perner(value: object) -> str:
-    return str(value or "").strip()
-
-
-def ensure_app_user(perner: str, password: str) -> None:
-    perner_value = normalize_perner(perner)
-    if not perner_value or not password:
-        return
-    create_tables()
-    with session_scope() as session:
-        existing = session.execute(select(AppUser).where(AppUser.perner == perner_value)).scalar_one_or_none()
-        if existing is not None:
-            return
-        session.add(AppUser(perner=perner_value, password_hash=generate_password_hash(password)))
-        session.add(AuditLog(action="auth_user_seed", message=f"User login PERNER {perner_value} dibuat."))
-
-
-def authenticate_app_user(perner: str, password: str) -> dict[str, object] | None:
-    perner_value = normalize_perner(perner)
-    if not perner_value or not password:
-        return None
-    create_tables()
-    with session_scope() as session:
-        row = session.execute(select(AppUser).where(AppUser.perner == perner_value)).scalar_one_or_none()
-        if row is None or not check_password_hash(row.password_hash, password):
-            return None
-        return {"id": row.id, "perner": row.perner}
-
-
-def change_app_user_password(perner: str, old_password: str, new_password: str) -> bool:
-    perner_value = normalize_perner(perner)
-    if not perner_value or not old_password or not new_password:
-        return False
-    create_tables()
-    with session_scope() as session:
-        row = session.execute(select(AppUser).where(AppUser.perner == perner_value)).scalar_one_or_none()
-        if row is None or not check_password_hash(row.password_hash, old_password):
-            return False
-        row.password_hash = generate_password_hash(new_password)
-        session.add(AuditLog(action="auth_password_change", message=f"Password user PERNER {perner_value} diubah."))
-        return True
 
 SANCTION_DURATION_COLUMNS = ["jenis_sanksi", "durasi_hari"]
 

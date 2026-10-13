@@ -9,28 +9,28 @@ import json
 import math
 import mimetypes
 import re
+import os
+import hmac
 
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
-from flask import Flask, Response, jsonify, render_template, request, send_file, send_from_directory, session
+from flask import Flask, Response, jsonify, render_template, request, send_file, send_from_directory
 from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
+from services.file_storage import StorageError, delete_file, ensure_file, persist_file
 
-from config.settings import ARCHIVE_DIR, AUTH_DEFAULT_PASSWORD, AUTH_DEFAULT_PERNER, SECRET_KEY, TRANSFORMED_DIR, UPLOAD_DIR
+from config.settings import APP_DEBUG, APP_HOST, APP_PORT, ARCHIVE_DIR, TRANSFORMED_DIR, UPLOAD_DIR
 from services.calculations import MONTH_LABELS, dashboard_summary
 from services.database import DatabaseConnectionError
 from services.excel_reader import list_sheets, read_excel_file
 from services.repository import (
     archive_stored_names,
-    authenticate_app_user,
-    change_app_user_password,
     create_report_progress,
     delete_employee_master_by_perners,
     delete_report_progress,
     delete_archive_document,
     delete_upload_batch,
-    ensure_app_user,
     get_archive_document,
     get_archive_documents,
     get_archive_filter_options,
@@ -60,23 +60,36 @@ from services.validator import validate_structure, validate_transformed_data
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024
-app.config["SECRET_KEY"] = SECRET_KEY
-app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-
-
-def _is_authenticated() -> bool:
-    return bool(session.get("authenticated"))
+if os.getenv("STORAGE_BACKEND") == "supabase":
+    app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 
 
 @app.before_request
-def require_login():
-    allowed_paths = {"/", "/api/auth/login", "/api/auth/logout", "/api/auth/me"}
-    if request.path in allowed_paths or request.path.startswith(("/static/", "/assets/")):
+def hosting_access():
+    if request.path == "/healthz":
         return None
-    if request.path.startswith("/api/") and not _is_authenticated():
-        return jsonify({"ok": False, "code": "UNAUTHENTICATED", "message": "Silakan login terlebih dahulu."}), 401
-    return None
+    username = os.getenv("HOSTING_USERNAME", "")
+    password = os.getenv("HOSTING_PASSWORD", "")
+    if not username or not password:
+        if os.getenv("RENDER") == "true":
+            return jsonify({"ok": False, "message": "Konfigurasi akses hosting belum lengkap."}), 503
+        return None
+    auth = request.authorization
+    if (auth and auth.type == "basic"
+            and hmac.compare_digest((auth.username or "").encode(), username.encode())
+            and hmac.compare_digest((auth.password or "").encode(), password.encode())):
+        return None
+    return Response("Akses internal IMC", 401, {"WWW-Authenticate": 'Basic realm="IMC Internal"'})
+
+
+@app.errorhandler(StorageError)
+def handle_storage_error(exc):
+    return jsonify({"ok": False, "message": str(exc)}), 503
+
+
+@app.get("/healthz")
+def healthz():
+    return jsonify({"ok": True})
 
 
 @app.after_request
@@ -558,6 +571,9 @@ def _persist_latest(raw_df: pd.DataFrame, transformed_df: pd.DataFrame, source_p
     transformed_path = batch_dir / f"{batch_file_id}_transformed.xlsx"
     raw_df.to_excel(raw_path, index=False)
     transformed_df.to_excel(transformed_path, index=False)
+    persist_file(raw_path)
+    persist_file(transformed_path)
+    persist_file(source_path)
 
     validation = validate_transformed_data(transformed_df)
     batch_id = save_upload_batch(
@@ -614,55 +630,6 @@ def _archive_by_id(archive_id: str) -> dict[str, object] | None:
 @app.get("/")
 def index():
     return render_template("index.html")
-
-
-@app.get("/api/auth/me")
-def auth_me_api():
-    return jsonify(
-        {
-            "ok": True,
-            "authenticated": _is_authenticated(),
-            "user": {"perner": session.get("perner")} if _is_authenticated() else None,
-        }
-    )
-
-
-@app.post("/api/auth/login")
-def auth_login_api():
-    payload = request.get_json(silent=True) or {}
-    perner = str(payload.get("perner") or "").strip()
-    password = str(payload.get("password") or "")
-    ensure_app_user(AUTH_DEFAULT_PERNER, AUTH_DEFAULT_PASSWORD)
-    user = authenticate_app_user(perner, password)
-    if user:
-        session.clear()
-        session["authenticated"] = True
-        session["perner"] = user["perner"]
-        return jsonify({"ok": True, "user": {"perner": user["perner"]}})
-    return jsonify({"ok": False, "message": "PERNER atau password salah."}), 401
-
-
-@app.post("/api/auth/change-password")
-def auth_change_password_api():
-    if not _is_authenticated():
-        return jsonify({"ok": False, "code": "UNAUTHENTICATED", "message": "Silakan login terlebih dahulu."}), 401
-    payload = request.get_json(silent=True) or {}
-    old_password = str(payload.get("old_password") or "")
-    new_password = str(payload.get("new_password") or "")
-    confirm_password = str(payload.get("confirm_password") or "")
-    if not (1 <= len(new_password) <= 8):
-        return jsonify({"ok": False, "message": "Password baru wajib 1 sampai 8 karakter."}), 400
-    if new_password != confirm_password:
-        return jsonify({"ok": False, "message": "Konfirmasi password tidak sama."}), 400
-    if not change_app_user_password(str(session.get("perner") or ""), old_password, new_password):
-        return jsonify({"ok": False, "message": "Password lama salah."}), 400
-    return jsonify({"ok": True})
-
-
-@app.post("/api/auth/logout")
-def auth_logout_api():
-    session.clear()
-    return jsonify({"ok": True})
 
 
 
@@ -1106,6 +1073,7 @@ def master_employees_preview_api():
     path = MASTER_STAGING_DIR / f"{uuid4().hex}_{filename}"
     uploaded.save(path)
     employee_raw, _, sheet_names = _read_master_workbook(path)
+    persist_file(path)
     employee_df, employee_errors = validate_employee_master_dataframe(employee_raw)
     payload = _employee_master_payload(employee_df, employee_errors)
     payload.update({
@@ -1125,7 +1093,7 @@ def master_employees_load_api():
     mode = str(payload.get("mode") or "update").lower()
     if mode not in {"update", "replace"}:
         mode = "update"
-    if not path.exists() or MASTER_STAGING_DIR not in path.parents:
+    if MASTER_STAGING_DIR.resolve() not in path.resolve().parents or not ensure_file(path):
         return jsonify({"ok": False, "message": "File master tidak ditemukan."}), 400
     employee_raw, _, sheet_names = _read_master_workbook(path)
     normalized, errors = validate_employee_master_dataframe(employee_raw)
@@ -1505,7 +1473,9 @@ def save_transform_api():
     batch_dir = TRANSFORMED_DIR / "batches"
     batch_dir.mkdir(parents=True, exist_ok=True)
     transformed_file_name = secure_filename(source_file_name or "") or "transform_manual.xlsx"
-    transformed.to_excel(batch_dir / f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid4().hex[:8]}_{transformed_file_name}", index=False)
+    transformed_path = batch_dir / f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid4().hex[:8]}_{transformed_file_name}"
+    transformed.to_excel(transformed_path, index=False)
+    persist_file(transformed_path)
 
     source_batch_id = payload.get("batch_id")
     source_batch = pd.DataFrame()
@@ -1544,6 +1514,7 @@ def preview_sanctions_api():
     upload_id = uuid4().hex
     path = STAGING_DIR / f"{upload_id}_{filename}"
     uploaded.save(path)
+    persist_file(path)
     try:
         sheet_details, preview_df = _scan_upload_sheets(path)
         selected_sheets = [sheet["name"] for sheet in sheet_details if sheet["selected"]]
@@ -1576,7 +1547,7 @@ def load_sanctions_api():
     path = Path(str(payload.get("path", "")))
     selected_sheets = payload.get("selected_sheets") or []
     file_name = str(payload.get("file_name") or path.name)
-    if not path.exists() or STAGING_DIR not in path.parents:
+    if STAGING_DIR.resolve() not in path.resolve().parents or not ensure_file(path):
         return jsonify({"ok": False, "message": "File upload tidak ditemukan."}), 400
     if not selected_sheets:
         sheet_details, _ = _scan_upload_sheets(path)
@@ -1596,7 +1567,7 @@ def load_sanctions_api():
 def transform_preview_sanctions_api():
     payload = request.get_json(silent=True) or {}
     path = Path(str(payload.get("path") or ""))
-    if not path.exists() or STAGING_DIR not in path.parents:
+    if STAGING_DIR.resolve() not in path.resolve().parents or not ensure_file(path):
         return jsonify({"ok": False, "message": "File staging tidak ditemukan. Upload ulang file terlebih dahulu."}), 400
 
     sheet_details, _ = _scan_upload_sheets(path)
@@ -1673,6 +1644,7 @@ def archive_upload_api():
     stored_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{archive_id[:8]}.{extension}"
     path = ARCHIVE_DIR / stored_name
     uploaded.save(path)
+    persist_file(path)
     archive_db_id = save_archive_document(
         title=title,
         file_name=filename,
@@ -1690,12 +1662,11 @@ def archive_delete_api(archive_id: str):
     record = _archive_by_id(archive_id)
     if not record:
         return jsonify({"ok": False, "message": "Arsip tidak ditemukan."}), 404
+    path = ARCHIVE_DIR / str(record.get("stored_name"))
+    delete_file(path)
     deleted = delete_archive_document(archive_id)
     if not deleted:
         return jsonify({"ok": False, "message": "Arsip tidak ditemukan."}), 404
-    path = ARCHIVE_DIR / str(record.get("stored_name"))
-    if path.exists():
-        path.unlink()
     return jsonify({"ok": True})
 
 @app.get("/api/archives/<archive_id>/file")
@@ -1704,6 +1675,8 @@ def archive_file_api(archive_id: str):
     if not record:
         return jsonify({"message": "Arsip tidak ditemukan."}), 404
     path = ARCHIVE_DIR / str(record.get("stored_name"))
+    if not ensure_file(path):
+        return jsonify({"message": "File arsip tidak ditemukan."}), 404
     return send_file(path, mimetype=str(record.get("mime_type") or "application/octet-stream"), as_attachment=False, download_name=str(record.get("file_name") or path.name))
 
 
@@ -1713,6 +1686,8 @@ def archive_download_api(archive_id: str):
     if not record:
         return jsonify({"message": "Arsip tidak ditemukan."}), 404
     path = ARCHIVE_DIR / str(record.get("stored_name"))
+    if not ensure_file(path):
+        return jsonify({"message": "File arsip tidak ditemukan."}), 404
     return send_file(path, mimetype=str(record.get("mime_type") or "application/octet-stream"), as_attachment=True, download_name=str(record.get("file_name") or path.name))
 
 
@@ -1722,6 +1697,8 @@ def archive_preview_api(archive_id: str):
     if not record:
         return jsonify({"message": "Arsip tidak ditemukan."}), 404
     path = ARCHIVE_DIR / str(record.get("stored_name"))
+    if not ensure_file(path):
+        return jsonify({"message": "File arsip tidak ditemukan."}), 404
     ext = str(record.get("extension", "")).lower()
     if ext in TABLE_EXTENSIONS:
         df = pd.read_csv(path) if ext == "csv" else pd.read_excel(path)
@@ -1736,7 +1713,7 @@ def archive_preview_api(archive_id: str):
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8501, debug=True)
+    app.run(host=APP_HOST, port=APP_PORT, debug=APP_DEBUG)
 
 
 
